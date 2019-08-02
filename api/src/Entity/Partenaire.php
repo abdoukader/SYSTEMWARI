@@ -46,11 +46,6 @@ class Partenaire
     private $mail;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="partenaires")
-     */
-    private $user;
-
-    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Compte", mappedBy="partenaire")
      */
     private $comptes;
@@ -121,18 +116,6 @@ class Partenaire
     public function setMail(string $mail): self
     {
         $this->mail = $mail;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }

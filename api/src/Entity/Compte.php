@@ -35,6 +35,11 @@ class Compte
      */
     private $depots;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $numcompte;
+
     public function __construct()
     {
         $this->depots = new ArrayCollection();
@@ -93,6 +98,18 @@ class Compte
             $this->depots->removeElement($depot);
             $depot->removeCompte($this);
         }
+
+        return $this;
+    }
+
+    public function getNumcompte(): ?int
+    {
+        return $this->numcompte;
+    }
+
+    public function setNumcompte(int $numcompte): self
+    {
+        $this->numcompte = $numcompte;
 
         return $this;
     }
