@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Compte;
+use App\Entity\Depot;
 use App\Entity\Partenaire;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,23 +18,31 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CompteController extends AbstractController
 {
     /**
-     * @Route("/compte", name="compte",methods={"GET"})
+     * @Route("/compte", name="compte",methods={"POST"})
      */
     public function compte(Request $request, SerializerInterface $serializer,
         EntityManagerInterface $entityManager, ValidatorInterface $validator) {
         $values = json_decode($request->getContent());
-        if (isset($values->partenaire_id)) {
-            $compte = new Compte();
-            $part = $this->getDoctrine()->getRepository(Partenaire::class)->find($values->partenaire_id);
-            $compte->setPartenaire($part);
-            $compte->setMontant($values->montant);
-            $errors = $validator->validate($compte);
+        if (isset($values->user_id)) {
+            $depot = new Depot();
+            $use = $this->getDoctrine()->getRepository(User::class)->find($values->user_id);
+            $depot->setUser($use);
+
+            $dep = $this->getDoctrine()->getRepository(Compte::class)->find($values->compte_id);
+            $dep->setSolde($dep->getSolde() + $values->somme);
+            $depot->setCompte($dep);
+
+            $depot->setSomme($values->somme);
+
+            $depot->setDate(new \DateTime('now'));
+            $errors = $validator->validate($depot);
             if (count($errors)) {
                 $errors = $serializer->serialize($errors, 'json');
                 return new Response($errors, 500, ['Content-Type' => 'Application/json']);
             }
-            $entityManager->persist($compte);
+            $entityManager->persist($depot);
             $entityManager->flush();
+
             $data = ['status' => 201, 'message' => 'compte alimenter'];
             return new JsonResponse($data, 201);
         }

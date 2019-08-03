@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Compte;
+use App\Entity\Partenaire;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +27,9 @@ class SecuriteController extends AbstractController
     {
         $values = json_decode($request->getContent());
         if (isset($values->username, $values->password)) {
+
+            $random = random_int(10000000, 99999999);
+
             $user = new User();
             $user->setUsername($values->username);
             $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
@@ -47,11 +52,26 @@ class SecuriteController extends AbstractController
             $user->setNom($values->nom);
             $user->setPrenom($values->prenom);
             $user->setTel($values->tel);
-            $user->setMail($values->email);
+            $user->setMail($values->mail);
             $user->setAdresse($values->adresse);
             $user->setStatut($values->statut);
             $user->setNinea($values->ninea);
             $errors = $validator->validate($user);
+
+            $partenaire = new Partenaire();
+            $partenaire->setNom($values->nom);
+            $partenaire->setNinea($values->ninea);
+            $partenaire->setAdresse($values->adresse);
+            $partenaire->setTel($values->tel);
+            $partenaire->setMail($values->mail);
+            $partenaire->setUser($user);
+
+            $compte = new Compte();
+            $compte->setSolde($values->solde);
+            $compte->setNumcompte($random);
+            $compte->setPartenaire($partenaire);
+
+
             if (count($errors)) {
                 $errors = $serializer->serialize($errors, 'json');
                 return new Response($errors, 500, [
@@ -59,6 +79,8 @@ class SecuriteController extends AbstractController
                 ]);
             }
             $entityManager->persist($user);
+            $entityManager->persist($partenaire);
+            $entityManager->persist($compte);
             $entityManager->flush();
 
             $data = [

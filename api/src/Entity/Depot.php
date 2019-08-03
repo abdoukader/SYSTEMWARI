@@ -31,7 +31,17 @@ class Depot
     private $date;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Compte", inversedBy="depots")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="depots")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Partenaire", inversedBy="depots")
+     */
+    private $partenaire;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Compte", inversedBy="depot")
      */
     private $compte;
 
@@ -69,28 +79,47 @@ class Depot
         return $this;
     }
 
-    /**
-     * @return Collection|Compte[]
-     */
-    public function getCompte(): Collection
+    public function getUser(): ?User
     {
-        return $this->compte;
+        return $this->user;
     }
 
-    public function addCompte(Compte $compte): self
+    public function setUser(?User $user): self
     {
-        if (!$this->compte->contains($compte)) {
-            $this->compte[] = $compte;
-        }
+        $this->user = $user;
 
         return $this;
     }
 
-    public function removeCompte(Compte $compte): self
+    public function getPartenaire(): ?Partenaire
     {
-        if ($this->compte->contains($compte)) {
-            $this->compte->removeElement($compte);
-        }
+        return $this->partenaire;
+    }
+
+    public function setPartenaire(?Partenaire $partenaire): self
+    {
+        $this->partenaire = $partenaire;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of compte
+     */ 
+    public function getCompte()
+    {
+        return $this->compte;
+    }
+
+    /**
+     * Set the value of compte
+     *
+     * @return  self
+     */ 
+    public function setCompte($compte)
+    {
+        $this->compte = $compte;
 
         return $this;
     }

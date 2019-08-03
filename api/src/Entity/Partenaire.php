@@ -50,9 +50,20 @@ class Partenaire
      */
     private $comptes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="partenaires")
+     */
+    private $user;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="partenaire")
+     */
+    private $depots;
+
     public function __construct()
     {
         $this->comptes = new ArrayCollection();
+        $this->depots = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +156,49 @@ class Partenaire
             // set the owning side to null (unless already changed)
             if ($compte->getPartenaire() === $this) {
                 $compte->setPartenaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setPartenaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getPartenaire() === $this) {
+                $depot->setPartenaire(null);
             }
         }
 

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -72,6 +74,22 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=255)
      */
     private $profil;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Partenaire", mappedBy="user")
+     */
+    private $partenaires;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="user")
+     */
+    private $depots;
+
+    public function __construct()
+    {
+        $this->partenaires = new ArrayCollection();
+        $this->depots = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -238,6 +256,68 @@ class User implements UserInterface
     public function setProfil(string $profil): self
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Partenaire[]
+     */
+    public function getPartenaires(): Collection
+    {
+        return $this->partenaires;
+    }
+
+    public function addPartenaire(Partenaire $partenaire): self
+    {
+        if (!$this->partenaires->contains($partenaire)) {
+            $this->partenaires[] = $partenaire;
+            $partenaire->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePartenaire(Partenaire $partenaire): self
+    {
+        if ($this->partenaires->contains($partenaire)) {
+            $this->partenaires->removeElement($partenaire);
+            // set the owning side to null (unless already changed)
+            if ($partenaire->getUser() === $this) {
+                $partenaire->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepots(): Collection
+    {
+        return $this->depots;
+    }
+
+    public function addDepot(Depot $depot): self
+    {
+        if (!$this->depots->contains($depot)) {
+            $this->depots[] = $depot;
+            $depot->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepot(Depot $depot): self
+    {
+        if ($this->depots->contains($depot)) {
+            $this->depots->removeElement($depot);
+            // set the owning side to null (unless already changed)
+            if ($depot->getUser() === $this) {
+                $depot->setUser(null);
+            }
+        }
 
         return $this;
     }

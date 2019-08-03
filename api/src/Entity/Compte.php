@@ -40,9 +40,15 @@ class Compte
      */
     private $numcompte;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Depot", mappedBy="comptee")
+     */
+    private $depot;
+
     public function __construct()
     {
         $this->depots = new ArrayCollection();
+        $this->depot = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -112,5 +118,13 @@ class Compte
         $this->numcompte = $numcompte;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Depot[]
+     */
+    public function getDepot(): Collection
+    {
+        return $this->depot;
     }
 }
