@@ -36,7 +36,7 @@ class Compte
     private $depots;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     private $numcompte;
 
@@ -108,12 +108,12 @@ class Compte
         return $this;
     }
 
-    public function getNumcompte(): ?int
+    public function getNumcompte(): ?string
     {
         return $this->numcompte;
     }
 
-    public function setNumcompte(int $numcompte): self
+    public function setNumcompte(string $numcompte): self
     {
         $this->numcompte = $numcompte;
 

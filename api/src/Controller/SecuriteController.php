@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 
 /**
  * @Route("/api")
@@ -28,9 +29,11 @@ class SecuriteController extends AbstractController
         $values = json_decode($request->getContent());
         if (isset($values->username, $values->password)) {
 
-            $random = random_int(10000000, 99999999);
+            //$random = random_int(10000000, 99999999);
 
             $user = new User();
+            $form=$this->createForm(FormType::class, $user);
+            $form->handleRequest($request);
             $user->setUsername($values->username);
             $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
             $user->setProfil($values->profil);
@@ -50,12 +53,23 @@ class SecuriteController extends AbstractController
             }
             $user->setRoles($role);
             $user->setNom($values->nom);
+            $entrep=$values->nom;
+            $recup=substr($entrep,0,2);
+            while(true){
+                if(time() % 1 == 0){
+                    $alea = rand(100000000,999999999);
+                    break;
+                }
+                slep(1);
+            }
+            $concat=$recup.$alea;
             $user->setPrenom($values->prenom);
             $user->setTel($values->tel);
             $user->setMail($values->mail);
             $user->setAdresse($values->adresse);
             $user->setStatut($values->statut);
             $user->setNinea($values->ninea);
+            $entityManager = $this->getDoctrine()->getManager();
             $errors = $validator->validate($user);
 
             $partenaire = new Partenaire();
@@ -68,7 +82,7 @@ class SecuriteController extends AbstractController
 
             $compte = new Compte();
             $compte->setSolde($values->solde);
-            $compte->setNumcompte($random);
+            $compte->setNumcompte($concat);
             $compte->setPartenaire($partenaire);
 
 

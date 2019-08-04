@@ -24,22 +24,27 @@ class CompteController extends AbstractController
         EntityManagerInterface $entityManager, ValidatorInterface $validator) {
         $values = json_decode($request->getContent());
         if (isset($values->user_id)) {
+
             $depot = new Depot();
+
+            $depot->setSomme($values->somme);
+            $depot->setDate(new \DateTime('now'));
+
             $use = $this->getDoctrine()->getRepository(User::class)->find($values->user_id);
             $depot->setUser($use);
 
             $dep = $this->getDoctrine()->getRepository(Compte::class)->find($values->compte_id);
+           
+            var_dump($values);
             $dep->setSolde($dep->getSolde() + $values->somme);
             $depot->setCompte($dep);
-
-            $depot->setSomme($values->somme);
-
-            $depot->setDate(new \DateTime('now'));
+            
             $errors = $validator->validate($depot);
             if (count($errors)) {
                 $errors = $serializer->serialize($errors, 'json');
                 return new Response($errors, 500, ['Content-Type' => 'Application/json']);
             }
+
             $entityManager->persist($depot);
             $entityManager->flush();
 

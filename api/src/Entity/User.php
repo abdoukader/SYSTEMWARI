@@ -85,6 +85,7 @@ class User implements UserInterface
      */
     private $depots;
 
+
     public function __construct()
     {
         $this->partenaires = new ArrayCollection();
@@ -321,4 +322,6 @@ class User implements UserInterface
 
         return $this;
     }
+
+   
 }
