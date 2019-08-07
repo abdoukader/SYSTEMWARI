@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
             $user->setProfil($values->profil);
             $profil = $user->getProfil();
             $role = [];
-            if ($profil == "adminpartenaire") {
+            if ($profil == "adminparten") {
                 $role = ["ROLE_ADMIN_PARTENAIRE"];
             } elseif ($profil == "superadmin") {
                 $role = ["ROLE_SUPER_ADMIN"];
@@ -65,7 +65,7 @@ class SecurityController extends AbstractController
             $entityManager->flush();
             $data = [
                 'status' => 201,
-                'message' => 'L\'utilisateur a été créé',
+                'message' => 'L\'utilisateur a été bien créé',
             ];
             return new JsonResponse($data, 201);
         }
