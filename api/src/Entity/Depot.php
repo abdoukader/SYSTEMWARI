@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -22,6 +22,8 @@ class Depot
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min="75000")
+     * @Assert\NotBlank(message="Vous devez insérer un téléphone")
      */
     private $somme;
 
@@ -103,10 +105,9 @@ class Depot
         return $this;
     }
 
-
     /**
      * Get the value of compte
-     */ 
+     */
     public function getCompte()
     {
         return $this->compte;
@@ -116,7 +117,7 @@ class Depot
      * Set the value of compte
      *
      * @return  self
-     */ 
+     */
     public function setCompte($compte)
     {
         $this->compte = $compte;
